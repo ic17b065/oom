@@ -4,14 +4,25 @@ namespace Task2
 {
     public class Actuator
     {
-        //Constructor
-        public Actuator(string name, string type, double current, double voltage)
-        {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name must not be empty.", nameof(name));
-            if (string.IsNullOrWhiteSpace(type)) throw new ArgumentException("Type must not be empty.", nameof(type));
+        // private fields
+        private string name;
+        private string type;
+        private double current;
+        private double voltage;
 
-            Name = name;
-            Type = type;
+        //Constructor
+        public Actuator(string newName, string newType, double newCurrent, double newVoltage)
+        {
+            if (string.IsNullOrWhiteSpace(newName)) throw new ArgumentException("Name must not be empty.", nameof(newName));
+            if (string.IsNullOrWhiteSpace(newType)) throw new ArgumentException("Type must not be empty.", nameof(newType));
+            if (newCurrent < 0) throw new ArgumentException("Current must be higher than 0.", nameof(newCurrent));
+            if ((newVoltage < 18) || (newVoltage > 30)) throw new ArgumentException("Voltage must be between 18 and 30.", nameof(newVoltage));
+
+
+            Name = name = newName;
+            Type = type = newType;
+            current = newCurrent;
+            voltage = newVoltage;
 
             power = GetPower(current, voltage);
 
@@ -58,17 +69,17 @@ namespace Task2
             Console.WriteLine("Actuator {0} {1, -7} {2, 5} W", PLS.Name, PLS.Type, PLS.Power);
             Console.WriteLine("Actuator {0} {1, -7} {2, 5} W", FTA.Name, FTA.Type, FTA.Power);
 
-            double newCurrent, newVoltage;
+            double iCurrent, iVoltage;
             Console.WriteLine("\nCalculate new power for KS2:");
             Console.WriteLine("Current: ");
             string inCurrent = Console.ReadLine();
-            newCurrent = Convert.ToInt32(inCurrent);
+            iCurrent = Convert.ToInt32(inCurrent);
             Console.WriteLine("Voltage: ");
             string inVoltage = Console.ReadLine();
-            newVoltage = Convert.ToInt32(inVoltage);
+            iVoltage = Convert.ToInt32(inVoltage);
             
             //calls methods on these objects and prints the effects to the console
-            Console.WriteLine("\nActuator {0} {1, -7} {2, 5} W\n", KS2.Name, KS2.Type, KS2.GetPower(newCurrent, newVoltage));
+            Console.WriteLine("\nActuator {0} {1, -7} {2, 5} W\n", KS2.Name, KS2.Type, KS2.GetPower(iCurrent, iVoltage));
                                
         }
     }
