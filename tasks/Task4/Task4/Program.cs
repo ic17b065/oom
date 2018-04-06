@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -115,7 +116,7 @@ namespace Task4
 
                 //create Array
                 IActuator[] ActuatorArray = { PLA, FTA, new ChainDrive("KS2", 125.70), KSA };
-                
+
                 //print Array
                 foreach (IActuator Actuator in ActuatorArray)
                 {
@@ -124,13 +125,26 @@ namespace Task4
 
                 //serialize ActuatorArray with all items, formatting and type included 
                 var settings = new JsonSerializerSettings() { Formatting = Formatting.Indented, TypeNameHandling = TypeNameHandling.Auto };
-                var json = JsonConvert.SerializeObject(ActuatorArray, settings);
+                /*var json = JsonConvert.SerializeObject(ActuatorArray, settings);
                 Console.WriteLine(json);
-
                 //deserialize json and print
                 var itemsfromjson = JsonConvert.DeserializeObject<IActuator[]>(json, settings);
                 foreach (var Actuator in itemsfromjson)
-                { 
+                    Actuator.Print();*/
+                Console.WriteLine(JsonConvert.SerializeObject(ActuatorArray, settings));
+
+                //store json string to file "items.json" on your desktop
+                var text = JsonConvert.SerializeObject(ActuatorArray, settings);
+                var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                var filename = Path.Combine(desktop, "Actuators.json");
+                File.WriteAllText(filename, text);
+
+                //deserialize items from "items.json"
+                var TextFromFile = File.ReadAllText(filename);
+                var ItemsFromFile = JsonConvert.DeserializeObject<IActuator[]>(TextFromFile, settings);
+
+                foreach (var Actuator in ItemsFromFile)
+                {
                     Actuator.Print();
                 }
             }
