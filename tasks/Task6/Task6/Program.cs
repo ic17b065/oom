@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+
 
 namespace Task6
 {
@@ -91,7 +94,7 @@ namespace Task6
     }
 
    
-    class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -149,9 +152,26 @@ namespace Task6
                     Actuator.Print();
                 }
 
+                //pullexample
                 PullExample.Run();
-                
 
+
+                //pushexample
+                                //var products = InitProducts();
+                                //products = new IActuator[] { };
+                var producer = new Subject<IActuator>();
+                producer.Subscribe(x => Console.WriteLine($"\nPush one product every second: {x} "));
+
+                foreach (var x in ActuatorArray)
+                {
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0));
+                    producer.OnNext(x);
+                    x.Print();
+                }
+                
+                //asyncexample
+                AsyncExample.Run();
+          
             }
 
             catch (Exception e)
@@ -159,5 +179,23 @@ namespace Task6
                 Console.WriteLine($"Something happens {e.Message}");
             }
         }
+
+        static void ForEach<T>(this IEnumerable<T> xs, Action<T> a)
+        {
+            foreach (var x in xs) a(x);
+        }
+
+        /*static IActuator[] InitProducts()
+        {
+            return new IActuator[]
+            {
+                new LinearDrive("PLA", 500, 2.5, 24.0),
+                new LinearDrive("FTA", 200, 1.4, 24.0),
+                new ChainDrive("KSA", 433.20),
+                new ChainDrive("KS2", 270.33)
+                           
+            };
+        }*/
+
     }
 }
